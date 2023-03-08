@@ -43,7 +43,7 @@ pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i64 {
             }
             //cant handle fractional exponents as I am too dumb to know how to do them trunkates the desimal
             Token::Exponent => {
-                let ex = stack.pop().unwrap() as i64;
+                let ex = stack.pop().unwrap();
                 let d = stack.pop().unwrap();
                 match ex {
                     0 => stack.push(1),
@@ -51,7 +51,7 @@ pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i64 {
                     _ => {
                         let mut b: i64 = 1;
                         for _n in 0..ex {
-                            b = b * d;
+                            b *= d;
                         }
                         stack.push(b);
                     }
@@ -68,15 +68,7 @@ fn roll(die: Die) -> i64 {
     let mut current: i64 = 0;
     //let die = dice.unwrap();
     for _n in 0..die.number {
-        current = current + rng.gen_range(1..die.sides + 1) as i64;
+        current += rng.gen_range(1..die.sides + 1) as i64;
     }
     current
 }
-// pub(super) trait roll {
-//     pub(super) fn roll() -> f64;
-// }
-// pub(super) impl roll for Equation {
-//     fn roll() -> f64 {
-//         todo!();
-//     }
-// }

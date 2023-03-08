@@ -96,14 +96,7 @@ enum RollType {
     Low,
     High,
 }
-// trait Rollable {
-//     fn roll(&self) -> i64;
-// }
-// impl Rollable for Equation {
-//     fn roll(&self) -> i64 {
-//         roll::process(self)
-//     }
-// }
+
 #[derive(Debug, Clone, Copy)]
 enum Token {
     Operand(u32),
@@ -128,18 +121,8 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
     let mut last_token_was_die = false;
 
     for token in input.chars().filter(|c| !c.is_whitespace()) {
-        // println!("o{:?}", output_queue);
-        // println!("s{:?}", operator_stack);
-        // println!("{}", token);
-
-        // println!("Operand {:?}", last_token_was_operand);
-        // println!("Die {:?}", last_token_was_die);
         match token {
             '0'..='9' => {
-                //if last_token_was_operand {
-                //output_queue.push(Token::Times);
-                //}
-                //let digit: u32;
                 if last_token_was_operand {
                     let digit: u32;
                     if let Token::Operand(value) = output_queue.pop().unwrap() {
@@ -150,7 +133,6 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
                         panic!()
                     }
                 } else if last_token_was_die {
-                    //println!("{:?}", output_queue.pop().unwrap())
                     if let Token::Dice(cdie) = output_queue.pop().unwrap() {
                         let number = cdie.number;
                         let sides = cdie.sides * 10 + token.to_digit(10).unwrap();
@@ -164,8 +146,6 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
                     output_queue.push(Token::Operand(digit));
                     last_token_was_operand = true;
                 }
-                //println!("Operand {:?}", last_token_was_operand);
-                //println!("Die {:?}", last_token_was_die);
             }
             '(' => {
                 if last_token_was_operand | last_token_was_die {
@@ -267,9 +247,6 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
             '^' => {
                 let token_precedence = operator_precedence(Token::Exponent);
                 while let Some(&top) = operator_stack.last() {
-                    //if let Token::L = top {
-                    //break;
-                    //} else {
                     let top_precedence = operator_precedence(top);
                     if token_precedence <= top_precedence {
                         output_queue.push(operator_stack.pop().unwrap());
@@ -277,7 +254,6 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
                         break;
                     }
                 }
-                //}
                 operator_stack.push(Token::Exponent);
                 last_token_was_operand = false;
                 last_token_was_die = false;
@@ -320,34 +296,3 @@ fn operator_precedence(token: Token) -> i32 {
         Token::Dice(_) => panic!("Expected operator, found operand"),
     }
 }
-
-// #[cfg(test)]
-// #[test]
-// fn infix() {
-//     assert_eq!("", format!("{:?}", infix_to_postfix("2(1-5)^2+3*2")))
-// }
-// fn main() {
-//     let infix_expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
-//     let postfix_expression = infix_to_postfix(infix_expression);
-//     println!("Infix expression: {}", infix_expression);
-//     println!("Postfix expression: {:?}", postfix_expression);
-//     let infix_expression = "256*2";
-//     let postfix_expression = infix_to_postfix(infix_expression);
-//     println!("Infix expression: {}", infix_expression);
-//     println!("Postfix expression: {:?}", postfix_expression);
-//     let infix_expression = "3+-2";
-//     let postfix_expression = infix_to_postfix(infix_expression);
-//     println!("Infix expression: {}", infix_expression);
-//     println!("Postfix expression: {:?}", postfix_expression);
-//     let infix_expression = "3+2*7+3-1/2";
-//     let postfix_expression = infix_to_postfix(infix_expression);
-//     println!("Infix expression: {}", infix_expression);
-//     println!("Postfix expression: {:?}", postfix_expression);
-//     let infix_expression = "1d5+3";
-//     letopostfix_expression = infix_to_postfix(infix_expression);
-//     println!("Infix expression: {}", infix_expression);
-//     println!("Postfix expression: {:?}", postfix_expression);
-//     // let me = Equation::new("1d5+4*2");
-//     // //println!("{:?}", me);
-//     // println!("{}", me.roll());
-// }
