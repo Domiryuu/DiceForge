@@ -68,7 +68,7 @@ fn roll(die: Die) -> i64 {
     let mut current: i64 = 0;
     //let die = dice.unwrap();
     for _n in 0..die.number {
-        current = current + rng.gen_range(1..die.sides) as i64;
+        current = current + rng.gen_range(1..die.sides + 1) as i64;
     }
     current
 }

@@ -1,28 +1,84 @@
 mod roll;
 
+/// struct containing the Equation compiled for faster evaluation
+///
+/// # Example
+///
+/// ```
+/// let my_equation = Equation::new("3d5");
+/// let my_roll = my_equation.roll();
+/// ````
 pub struct Equation {
     compiled_equation: Vec<Token>,
 }
 impl Equation {
+    /// compiles and returns a new Equation
+    /// can be used to rapidly roll the same dice equation or to preform basic math without dice rolls
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// Equation::new("3d5+10/2^2");
+    /// ````
     pub fn new(input: &str) -> Self {
         let compiled_equation = infix_to_postfix(input);
         Equation { compiled_equation }
     }
+    /// rolls the Equation preforms basic math returning the product
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
+    /// ````
     pub fn roll(&self) -> i64 {
         //     todo!();
         roll::process(self, RollType::Default)
     }
+    /// calculates the product of the equation assuming the average roll of all die in the equation
+    /// if no die are present in the equation result will be the same as roll()
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
+    /// ````
     pub fn average(&self) -> i64 {
         roll::process(self, RollType::Average)
     }
+    ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
+    /// if no die notation is present in the equation both numbers will be the same as roll()
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let (low, high) = Equation::new("3d5+10/2^2").range();
+    /// println!("{} to {}", high, low);
+    /// ````
     pub fn range(&self) -> (i64, i64) {
         let low = roll::process(self, RollType::Low);
         let high = roll::process(self, RollType::High);
         (low, high)
     }
+    /// calculates the lowest possable number given the die
+    /// if no die notation is present in the equation this number will be the same as roll()
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
+    /// ````
     pub fn low(&self) -> i64 {
         roll::process(self, RollType::Low)
     }
+    /// calculates the highest possable number given the die
+    /// if no die notation is present in the equation this number will be the same as roll()
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
+    /// ````
     pub fn high(&self) -> i64 {
         roll::process(self, RollType::High)
     }
