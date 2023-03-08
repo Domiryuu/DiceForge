@@ -6,7 +6,7 @@ license = "MIT OR Apachi-2.0"
 description = "A small crate to preform basic math using dice notation for random numbers"
 readme = "README.md"
 repository = "https://github.com/domiryuu/dicey"
-keywords = ["gamedev", "RNG", "die", "Dice", "random", "math"]
+keywords = ["gamedev", "dice", "random", "math"]
 categories = ["game-development","mathematics",]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
