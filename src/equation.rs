@@ -5,7 +5,7 @@ mod roll;
 /// # Example
 ///
 /// ```
-/// use dicey::Equation;
+/// use dice_forge::Equation;
 /// let my_equation = Equation::new("3d5");
 /// let my_roll = my_equation.roll();
 /// ````
@@ -19,7 +19,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// Equation::new("3d5+10/2^2");
     /// ```
     pub fn new(input: &str) -> Self {
@@ -31,7 +31,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
     /// ````
     pub fn roll(&self) -> i64 {
@@ -44,7 +44,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
     /// ````
     pub fn average(&self) -> i64 {
@@ -56,7 +56,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// let (low, high) = Equation::new("3d5+10/2^2").range();
     /// println!("{} to {}", high, low);
     /// ````
@@ -71,7 +71,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
     /// ````
     pub fn low(&self) -> i64 {
@@ -83,7 +83,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
-    /// use dicey::Equation;
+    /// use dice_forge::Equation;
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
     /// ````
     pub fn high(&self) -> i64 {

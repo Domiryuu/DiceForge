@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     //use dicey::equation;
-    use dicey::Equation;
+    use dice_forge::Equation;
     #[test]
     #[should_panic(expected = "Divide by zero error")]
     fn devide_zero() {

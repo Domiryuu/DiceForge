@@ -1,4 +1,4 @@
-use dicey::Equation;
+use dice_forge::Equation;
 
 fn main() {
     let my_die = Equation::new("d100");

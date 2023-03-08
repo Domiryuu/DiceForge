@@ -2,12 +2,12 @@
 
 struct Person {
     health: i32,
-    damage: dicey::Equation,
+    damage: dice_forge::Equation,
 }
 
 impl Person {
     fn new(health: i32, d: &str) -> Self {
-        let damage = dicey::Equation::new(d);
+        let damage = dice_forge::Equation::new(d);
         Person { health, damage }
     }
     fn attack(&self) -> i64 {
