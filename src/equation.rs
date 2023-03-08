@@ -8,19 +8,39 @@ impl Equation {
         let compiled_equation = infix_to_postfix(input);
         Equation { compiled_equation }
     }
-    // pub fn roll() -> f64 {
-    //     todo!();
-    //     //roll::Process(Self)
-    // }
-}
-trait Rollable {
-    fn roll(&self) -> f64;
-}
-impl Rollable for Equation {
-    fn roll(&self) -> f64 {
-        roll::process(self)
+    pub fn roll(&self) -> i64 {
+        //     todo!();
+        roll::process(self, RollType::Default)
+    }
+    pub fn average(&self) -> i64 {
+        roll::process(self, RollType::Average)
+    }
+    pub fn range(&self) -> (i64, i64) {
+        let low = roll::process(self, RollType::Low);
+        let high = roll::process(self, RollType::High);
+        (low, high)
+    }
+    pub fn low(&self) -> i64 {
+        roll::process(self, RollType::Low)
+    }
+    pub fn high(&self) -> i64 {
+        roll::process(self, RollType::High)
     }
 }
+enum RollType {
+    Default,
+    Average,
+    Low,
+    High,
+}
+// trait Rollable {
+//     fn roll(&self) -> i64;
+// }
+// impl Rollable for Equation {
+//     fn roll(&self) -> i64 {
+//         roll::process(self)
+//     }
+// }
 #[derive(Debug, Clone, Copy)]
 enum Token {
     Operand(u32),
@@ -237,6 +257,12 @@ fn operator_precedence(token: Token) -> i32 {
         Token::Dice(_) => panic!("Expected operator, found operand"),
     }
 }
+
+// #[cfg(test)]
+// #[test]
+// fn infix() {
+//     assert_eq!("", format!("{:?}", infix_to_postfix("2(1-5)^2+3*2")))
+// }
 // fn main() {
 //     let infix_expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
 //     let postfix_expression = infix_to_postfix(infix_expression);

@@ -1,4 +1,5 @@
-mod equation;
+pub mod equation;
+pub use equation::Equation;
 mod errors;
 //mod roll;
 
