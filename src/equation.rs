@@ -5,6 +5,7 @@ mod roll;
 /// # Example
 ///
 /// ```
+/// use dicey::Equation;
 /// let my_equation = Equation::new("3d5");
 /// let my_roll = my_equation.roll();
 /// ````
@@ -18,8 +19,9 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// Equation::new("3d5+10/2^2");
-    /// ````
+    /// ```
     pub fn new(input: &str) -> Self {
         let compiled_equation = infix_to_postfix(input);
         Equation { compiled_equation }
@@ -29,6 +31,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
     /// ````
     pub fn roll(&self) -> i64 {
@@ -41,6 +44,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
     /// ````
     pub fn average(&self) -> i64 {
@@ -52,6 +56,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// let (low, high) = Equation::new("3d5+10/2^2").range();
     /// println!("{} to {}", high, low);
     /// ````
@@ -66,6 +71,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
     /// ````
     pub fn low(&self) -> i64 {
@@ -77,6 +83,7 @@ impl Equation {
     /// # Example
     ///
     /// ```
+    /// use dicey::Equation;
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
     /// ````
     pub fn high(&self) -> i64 {
