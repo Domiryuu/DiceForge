@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-    //use dicey::equation;
     use dice_forge::Equation;
     #[test]
     #[should_panic(expected = "Divide by zero error")]
@@ -60,10 +59,6 @@ mod tests {
     fn average_roll() {
         assert_eq!(105, Equation::new("10d20").average());
     }
-    // #[test]
-    // fn infix() {
-    //     assert_eq!("",format!("{:?}", equation::infix_to_postfix("2(1 - 5) ^ 2 + 3 * 2"))
-    // }
     #[test]
     fn test_roll() {
         let q = Equation::new("1d2");

@@ -34,6 +34,7 @@ impl Equation {
     /// use dice_forge::Equation;
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
     /// ````
+    #[inline(always)]
     pub fn roll(&self) -> i64 {
         //     todo!();
         roll::process(self, RollType::Default)
@@ -47,6 +48,7 @@ impl Equation {
     /// use dice_forge::Equation;
     /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
     /// ````
+    #[inline(always)]
     pub fn average(&self) -> i64 {
         roll::process(self, RollType::Average)
     }
@@ -60,6 +62,7 @@ impl Equation {
     /// let (low, high) = Equation::new("3d5+10/2^2").range();
     /// println!("{} to {}", high, low);
     /// ````
+    #[inline(always)]
     pub fn range(&self) -> (i64, i64) {
         let low = roll::process(self, RollType::Low);
         let high = roll::process(self, RollType::High);
@@ -74,6 +77,7 @@ impl Equation {
     /// use dice_forge::Equation;
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
     /// ````
+    #[inline(always)]
     pub fn low(&self) -> i64 {
         roll::process(self, RollType::Low)
     }
@@ -86,6 +90,7 @@ impl Equation {
     /// use dice_forge::Equation;
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
     /// ````
+    #[inline(always)]
     pub fn high(&self) -> i64 {
         roll::process(self, RollType::High)
     }
@@ -97,7 +102,7 @@ enum RollType {
     High,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 enum Token {
     Operand(u32),
     Plus,
@@ -108,7 +113,7 @@ enum Token {
     L,
     Dice(Die),
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 struct Die {
     number: u32,
     sides: u32,
@@ -285,7 +290,7 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
 
     output_queue
 }
-
+#[inline(always)]
 fn operator_precedence(token: Token) -> i32 {
     match token {
         Token::Plus | Token::Minus => 1,
