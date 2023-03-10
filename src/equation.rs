@@ -120,8 +120,8 @@ struct Die {
 }
 
 fn infix_to_postfix(input: &str) -> Vec<Token> {
-    let mut output_queue = Vec::new();
-    let mut operator_stack = Vec::new();
+    let mut output_queue: Vec<Token> = Vec::with_capacity(input.len());
+    let mut operator_stack: Vec<Token> = Vec::with_capacity(input.len());
     let mut last_token_was_operand = false;
     let mut last_token_was_die = false;
 

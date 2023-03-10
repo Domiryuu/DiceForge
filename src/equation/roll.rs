@@ -6,7 +6,7 @@ use rand::Rng;
 
 pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i64 {
     // todo!();
-    let mut stack = Vec::new();
+    let mut stack: Vec<i64> = Vec::with_capacity(equation.compiled_equation.len());
     for token in &equation.compiled_equation {
         match *token {
             Token::Operand(value) => stack.push(value as i64),
