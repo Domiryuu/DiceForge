@@ -15,5 +15,6 @@
 //! high() and low() check for lowest rolls or highest rolls not highest or lowest possable values of the equation as a whole
 
 pub mod equation;
+mod roll;
 pub use equation::Equation;
 mod errors;

@@ -1,4 +1,6 @@
-mod roll;
+//mod roll;
+use crate::errors;
+use crate::roll;
 
 /// struct containing the Equation compiled for faster evaluation
 ///
@@ -10,7 +12,7 @@ mod roll;
 /// let my_roll = my_equation.roll();
 /// ````
 pub struct Equation {
-    compiled_equation: Vec<Token>,
+    pub(crate) compiled_equation: Vec<Token>,
 }
 impl Equation {
     /// compiles and returns a new Equation
@@ -35,7 +37,7 @@ impl Equation {
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
     /// ````
     #[inline(always)]
-    pub fn roll(&self) -> i64 {
+    pub fn roll(&self) -> i32 {
         //     todo!();
         roll::process(self, RollType::Default)
     }
@@ -49,7 +51,7 @@ impl Equation {
     /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
     /// ````
     #[inline(always)]
-    pub fn average(&self) -> i64 {
+    pub fn average(&self) -> i32 {
         roll::process(self, RollType::Average)
     }
     ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
@@ -63,7 +65,7 @@ impl Equation {
     /// println!("{} to {}", high, low);
     /// ````
     #[inline(always)]
-    pub fn range(&self) -> (i64, i64) {
+    pub fn range(&self) -> (i32, i32) {
         let low = roll::process(self, RollType::Low);
         let high = roll::process(self, RollType::High);
         (low, high)
@@ -78,7 +80,7 @@ impl Equation {
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
     /// ````
     #[inline(always)]
-    pub fn low(&self) -> i64 {
+    pub fn low(&self) -> i32 {
         roll::process(self, RollType::Low)
     }
     /// calculates the highest possable number given the die
@@ -91,11 +93,11 @@ impl Equation {
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
     /// ````
     #[inline(always)]
-    pub fn high(&self) -> i64 {
+    pub fn high(&self) -> i32 {
         roll::process(self, RollType::High)
     }
 }
-enum RollType {
+pub(crate) enum RollType {
     Default,
     Average,
     Low,
@@ -103,7 +105,7 @@ enum RollType {
 }
 
 #[derive(Clone, Copy)]
-enum Token {
+pub(crate) enum Token {
     Operand(u32),
     Plus,
     Minus,
@@ -114,12 +116,12 @@ enum Token {
     Dice(Die),
 }
 #[derive(Clone, Copy)]
-struct Die {
-    number: u32,
-    sides: u32,
+pub(crate) struct Die {
+    pub(crate) number: u32,
+    pub(crate) sides: u32,
 }
 
-fn infix_to_postfix(input: &str) -> Vec<Token> {
+fn infix_to_postfix(input: &str) -> Result<Vec<Token>, crate::errors::InvalidExpressionError> {
     let mut output_queue: Vec<Token> = Vec::with_capacity(input.len());
     let mut operator_stack: Vec<Token> = Vec::with_capacity(input.len());
     let mut last_token_was_operand = false;
@@ -288,7 +290,7 @@ fn infix_to_postfix(input: &str) -> Vec<Token> {
         output_queue.push(operator);
     }
 
-    output_queue
+    Ok(output_queue)
 }
 #[inline(always)]
 fn operator_precedence(token: Token) -> i32 {
