@@ -35,7 +35,7 @@ impl Equation {
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
     /// ````
     #[inline(always)]
-    pub fn roll(&self) -> i64 {
+    pub fn roll(&self) -> i32 {
         //     todo!();
         roll::process(self, RollType::Default)
     }
@@ -49,7 +49,7 @@ impl Equation {
     /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
     /// ````
     #[inline(always)]
-    pub fn average(&self) -> i64 {
+    pub fn average(&self) -> i32 {
         roll::process(self, RollType::Average)
     }
     ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
@@ -63,7 +63,7 @@ impl Equation {
     /// println!("{} to {}", high, low);
     /// ````
     #[inline(always)]
-    pub fn range(&self) -> (i64, i64) {
+    pub fn range(&self) -> (i32, i32) {
         let low = roll::process(self, RollType::Low);
         let high = roll::process(self, RollType::High);
         (low, high)
@@ -78,7 +78,7 @@ impl Equation {
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
     /// ````
     #[inline(always)]
-    pub fn low(&self) -> i64 {
+    pub fn low(&self) -> i32 {
         roll::process(self, RollType::Low)
     }
     /// calculates the highest possable number given the die
@@ -91,7 +91,7 @@ impl Equation {
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
     /// ````
     #[inline(always)]
-    pub fn high(&self) -> i64 {
+    pub fn high(&self) -> i32 {
         roll::process(self, RollType::High)
     }
 }

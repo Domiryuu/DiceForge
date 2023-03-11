@@ -10,10 +10,10 @@ impl Person {
         let damage = dice_forge::Equation::new(d);
         Person { health, damage }
     }
-    fn attack(&self) -> i64 {
+    fn attack(&self) -> i32 {
         self.damage.roll()
     }
-    // fn damage(mut self, d: i64) {
+    // fn damage(mut self, d: i32) {
     //     self.health -= d as i32;
     // }
 }

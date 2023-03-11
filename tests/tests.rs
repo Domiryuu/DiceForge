@@ -7,6 +7,10 @@ mod tests {
         Equation::new("5/0").roll();
     }
     #[test]
+    fn spaces() {
+        Equation::new("1 d 5 + 2").roll();
+    }
+    #[test]
     fn basic_math() {
         assert_eq!(13, Equation::new("3+2*5").roll());
     }
