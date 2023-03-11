@@ -2,7 +2,7 @@
 //!
 //! ```rust
 //! use dice_forge::Equation;
-//! let attack = Equation::new("3d6+2");
+//! let attack = Equation::new("3d6+2").unwrap();
 //! println!("You attack for {} damage", attack.roll());
 //! ```
 //!

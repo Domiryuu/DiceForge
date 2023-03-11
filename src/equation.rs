@@ -8,7 +8,7 @@ use crate::roll;
 ///
 /// ```
 /// use dice_forge::Equation;
-/// let my_equation = Equation::new("3d5");
+/// let my_equation = Equation::new("3d5").unwrap();
 /// let my_roll = my_equation.roll();
 /// ````
 pub struct Equation {
@@ -24,9 +24,9 @@ impl Equation {
     /// use dice_forge::Equation;
     /// Equation::new("3d5+10/2^2");
     /// ```
-    pub fn new(input: &str) -> Self {
-        let compiled_equation = infix_to_postfix(input);
-        Equation { compiled_equation }
+    pub fn new(input: &str) -> Result<Equation, errors::InvalidExpressionError> {
+        let compiled_equation = infix_to_postfix(input)?;
+        Ok(Equation { compiled_equation })
     }
     /// rolls the Equation preforms basic math returning the product
     ///
@@ -34,7 +34,7 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("you rolled {}", Equation::new("3d5+10/2^2").roll());
+    /// println!("you rolled {}", Equation::new("3d5+10/2^2").unwrap().roll());
     /// ````
     #[inline(always)]
     pub fn roll(&self) -> i32 {
@@ -48,7 +48,7 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("average roll {}", Equation::new("3d5+10/2^2").average());
+    /// println!("average roll {}", Equation::new("3d5+10/2^2").unwrap().average());
     /// ````
     #[inline(always)]
     pub fn average(&self) -> i32 {
@@ -61,7 +61,7 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// let (low, high) = Equation::new("3d5+10/2^2").range();
+    /// let (low, high) = Equation::new("3d5+10/2^2").unwrap().range();
     /// println!("{} to {}", high, low);
     /// ````
     #[inline(always)]
@@ -77,7 +77,7 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").low());
+    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").unwrap().low());
     /// ````
     #[inline(always)]
     pub fn low(&self) -> i32 {
@@ -90,7 +90,7 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").high());
+    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").unwrap().high());
     /// ````
     #[inline(always)]
     pub fn high(&self) -> i32 {
@@ -121,7 +121,7 @@ pub(crate) struct Die {
     pub(crate) sides: u32,
 }
 
-fn infix_to_postfix(input: &str) -> Result<Vec<Token>, crate::errors::InvalidExpressionError> {
+fn infix_to_postfix(input: &str) -> Result<Vec<Token>, errors::InvalidExpressionError> {
     let mut output_queue: Vec<Token> = Vec::with_capacity(input.len());
     let mut operator_stack: Vec<Token> = Vec::with_capacity(input.len());
     let mut last_token_was_operand = false;
@@ -282,7 +282,9 @@ fn infix_to_postfix(input: &str) -> Result<Vec<Token>, crate::errors::InvalidExp
                 last_token_was_operand = false;
                 last_token_was_die = true;
             }
-            _ => panic!("Invalid token: {}", token),
+            _ => {
+                return Err(errors::InvalidExpressionError::InvalidToken(token));
+            }
         }
     }
 

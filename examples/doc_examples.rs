@@ -1,11 +1,23 @@
 use dice_forge::Equation;
 
 fn main() {
-    let my_equation = Equation::new("3d5");
+    let my_equation = match Equation::new("3d5") {
+        Ok(value) => value,
+        Err(error) => {
+            println!("{}", error);
+            panic!()
+        }
+    };
     let my_roll = my_equation.roll();
     println!("my_roll:{}", my_roll);
 
-    let doc_equation = Equation::new("3d5+10/2^2");
+    let doc_equation = match Equation::new("3d5+10/2^2") {
+        Ok(value) => value,
+        Err(error) => {
+            println!("{}", error);
+            panic!()
+        }
+    };
     println!("You rolled {}", doc_equation.roll());
     println!("Average roll {}", doc_equation.average());
     let (low, high) = doc_equation.range();

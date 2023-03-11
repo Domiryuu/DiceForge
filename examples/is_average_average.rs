@@ -1,7 +1,7 @@
 use dice_forge::Equation;
 
 fn main() {
-    let my_die = Equation::new("d100");
+    let my_die = Equation::new("d100").expect("handle the error in real code");
     let mut results: u64 = 0;
     let mut hit_low = false;
     let mut hit_high = false;
