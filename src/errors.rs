@@ -1,18 +1,19 @@
-#[derive(Debug)]
-pub enum DivideByZeroError {
-    DivideByZero,
-}
+// #[derive(Debug)]
+// pub enum DivideByZeroError {
+//     DivideByZero,
+// }
 
-impl std::fmt::Display for DivideByZeroError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Error: Attempted to divide by 0")
-    }
-}
+// impl std::fmt::Display for DivideByZeroError {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         write!(f, "Error: Attempted to divide by 0")
+//     }
+// }
 #[derive(Debug)]
 pub enum InvalidExpressionError {
     InvalidExpression,
     InvalidDie,
     InvalidToken(char),
+    DivideByZero,
 }
 
 impl std::fmt::Display for InvalidExpressionError {
@@ -29,8 +30,11 @@ impl std::fmt::Display for InvalidExpressionError {
                 write!(
                     f,
                     "Error: Unexpected token \'{}\' found while parsing",
-                    InvalidExpressionError::InvalidToken(*t)
+                    t
                 )
+            }
+            InvalidExpressionError::DivideByZero => {
+                write!(f, "Error: Attempted to divide by 0")
             }
         }
     }

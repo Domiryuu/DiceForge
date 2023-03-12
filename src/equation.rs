@@ -37,7 +37,7 @@ impl Equation {
     /// println!("you rolled {}", Equation::new("3d5+10/2^2").unwrap().roll().unwrap());
     /// ````
     #[inline(always)]
-    pub fn roll(&self) -> Result<i32, errors::DivideByZeroError> {
+    pub fn roll(&self) -> Result<i32, errors::InvalidExpressionError> {
         //     todo!();
         Ok(roll::process(self, RollType::Default)?)
     }
@@ -51,7 +51,7 @@ impl Equation {
     /// println!("average roll {}", Equation::new("3d5+10/2^2").unwrap().average().unwrap());
     /// ````
     #[inline(always)]
-    pub fn average(&self) -> Result<i32, errors::DivideByZeroError> {
+    pub fn average(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Average)?)
     }
     ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
@@ -65,7 +65,7 @@ impl Equation {
     /// println!("{} to {}", high, low);
     /// ````
     #[inline(always)]
-    pub fn range(&self) -> Result<(i32, i32), errors::DivideByZeroError> {
+    pub fn range(&self) -> Result<(i32, i32), errors::InvalidExpressionError> {
         let low = roll::process(self, RollType::Low)?;
         let high = roll::process(self, RollType::High)?;
         Ok((low, high))
@@ -80,7 +80,7 @@ impl Equation {
     /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").unwrap().low().unwrap());
     /// ````
     #[inline(always)]
-    pub fn low(&self) -> Result<i32, errors::DivideByZeroError> {
+    pub fn low(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Low)?)
     }
     /// calculates the highest possable number given the die
@@ -93,7 +93,7 @@ impl Equation {
     /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").unwrap().high().unwrap());
     /// ````
     #[inline(always)]
-    pub fn high(&self) -> Result<i32, errors::DivideByZeroError> {
+    pub fn high(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::High)?)
     }
 }
@@ -121,11 +121,12 @@ pub(crate) struct Die {
     pub(crate) sides: u32,
 }
 
-fn infix_to_postfix(input: &str) -> Result<Vec<Token>, errors::InvalidExpressionError> {
+pub(crate) fn infix_to_postfix(input: &str) -> Result<Vec<Token>, errors::InvalidExpressionError> {
     let mut output_queue: Vec<Token> = Vec::with_capacity(input.len());
     let mut operator_stack: Vec<Token> = Vec::with_capacity(input.len());
     let mut last_token_was_operand = false;
     let mut last_token_was_die = false;
+    let mut error = None;
 
     for token in input.chars().filter(|c| !c.is_whitespace()) {
         match token {
@@ -283,9 +284,14 @@ fn infix_to_postfix(input: &str) -> Result<Vec<Token>, errors::InvalidExpression
                 last_token_was_die = true;
             }
             _ => {
-                return Err(errors::InvalidExpressionError::InvalidToken(token));
+                error = Some(errors::InvalidExpressionError::InvalidToken(token));
+                break;
             }
         }
+    }
+
+    if let Some(err) = error {
+        return Err(err);
     }
 
     while let Some(operator) = operator_stack.pop() {

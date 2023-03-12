@@ -1,3 +1,4 @@
+use dice_forge::roll;
 use dice_forge::Equation;
 
 fn main() {
@@ -24,4 +25,8 @@ fn main() {
     println!("range {} to {}", low, high);
     println!("lowest possable number {}", doc_equation.low().unwrap());
     println!("highest possable number {}", doc_equation.high().unwrap());
+    match roll::roll("test") {
+        Ok(v) => println!("{}", v),
+        Err(e) => println!("{}", e),
+    }
 }

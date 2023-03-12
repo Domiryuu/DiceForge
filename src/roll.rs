@@ -1,19 +1,18 @@
 use crate::equation;
 use crate::equation::{Die, Equation, Token};
-use crate::errors::DivideByZeroError;
+use crate::errors::InvalidExpressionError;
 use rand::Rng;
 
 pub(super) fn process(
     equation: &Equation,
     ty: equation::RollType,
-) -> Result<i32, DivideByZeroError> {
-    // todo!();
+) -> Result<i32, InvalidExpressionError> {
     let mut stack: Vec<i32> = Vec::with_capacity(equation.compiled_equation.len());
     for token in &equation.compiled_equation {
         match *token {
             Token::Operand(value) => stack.push(value as i32),
             Token::Dice(die) => match ty {
-                equation::RollType::Default => stack.push(roll(die)),
+                equation::RollType::Default => stack.push(roll_die(die)),
                 equation::RollType::Low => stack.push(die.number as i32),
                 equation::RollType::High => stack.push((die.number * die.sides) as i32),
                 equation::RollType::Average => {
@@ -39,7 +38,7 @@ pub(super) fn process(
                 let rhs = stack.pop().unwrap();
                 let lhs = stack.pop().unwrap();
                 if rhs == 0 {
-                    return Err(DivideByZeroError::DivideByZero);
+                    return Err(InvalidExpressionError::DivideByZero);
                 }
                 stack.push(lhs / rhs);
             }
@@ -64,7 +63,7 @@ pub(super) fn process(
     }
     Ok(stack.pop().unwrap())
 }
-fn roll(die: Die) -> i32 {
+fn roll_die(die: Die) -> i32 {
     // todo!();
     let mut rng = rand::thread_rng();
     let mut current: i32 = 0;
@@ -73,4 +72,11 @@ fn roll(die: Die) -> i32 {
         current += rng.gen_range(1..die.sides + 1) as i32;
     }
     current
+}
+
+pub fn roll(input: &str) -> Result<i32, InvalidExpressionError> {
+    let compiled_equation = equation::infix_to_postfix(input)?;
+    println!("compiled");
+    let a = Equation { compiled_equation };
+    process(&a, equation::RollType::Default)
 }

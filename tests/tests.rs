@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use dice_forge::roll;
     use dice_forge::Equation;
     #[test]
     //#[should_panic(expected = "Divide by zero error")]
@@ -91,6 +92,30 @@ mod tests {
                 Ok(2) => {}
                 _ => panic!(),
             }
+        }
+    }
+    #[test]
+    fn roll_call_ok() {
+        match roll::roll("1d4+5") {
+            Ok(_v) => {}
+            Err(_e) => panic!(),
+        }
+    }
+    #[test]
+    fn roll_call_err_0() {
+        match roll::roll("1/0") {
+            Ok(_v) => {}
+            Err(e) => assert_eq!("Error: Attempted to divide by 0", format!("{}", e)),
+        }
+    }
+    #[test]
+    fn roll_call_err_v() {
+        match roll::roll("test") {
+            Ok(_v) => {}
+            Err(e) => assert_eq!(
+                "Error: Unexpected token \'t\' found while parsing",
+                format!("{}", e)
+            ),
         }
     }
 }
