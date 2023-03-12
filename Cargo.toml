@@ -1,6 +1,6 @@
 [package]
 name = "dice_forge"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A small crate to preform basic math using dice notation for random numbers"
