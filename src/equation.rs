@@ -9,7 +9,7 @@ use crate::roll;
 /// ```
 /// use dice_forge::Equation;
 /// let my_equation = Equation::new("3d5").unwrap();
-/// let my_roll = my_equation.roll();
+/// let my_roll = my_equation.roll().unwrap();
 /// ````
 pub struct Equation {
     pub(crate) compiled_equation: Vec<Token>,
@@ -34,12 +34,12 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("you rolled {}", Equation::new("3d5+10/2^2").unwrap().roll());
+    /// println!("you rolled {}", Equation::new("3d5+10/2^2").unwrap().roll().unwrap());
     /// ````
     #[inline(always)]
-    pub fn roll(&self) -> i32 {
+    pub fn roll(&self) -> Result<i32, errors::DivideByZeroError> {
         //     todo!();
-        roll::process(self, RollType::Default)
+        Ok(roll::process(self, RollType::Default)?)
     }
     /// calculates the product of the equation assuming the average roll of all die in the equation
     /// if no die are present in the equation result will be the same as roll()
@@ -48,11 +48,11 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("average roll {}", Equation::new("3d5+10/2^2").unwrap().average());
+    /// println!("average roll {}", Equation::new("3d5+10/2^2").unwrap().average().unwrap());
     /// ````
     #[inline(always)]
-    pub fn average(&self) -> i32 {
-        roll::process(self, RollType::Average)
+    pub fn average(&self) -> Result<i32, errors::DivideByZeroError> {
+        Ok(roll::process(self, RollType::Average)?)
     }
     ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
     /// if no die notation is present in the equation both numbers will be the same as roll()
@@ -61,14 +61,14 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// let (low, high) = Equation::new("3d5+10/2^2").unwrap().range();
+    /// let (low, high) = Equation::new("3d5+10/2^2").unwrap().range().unwrap();
     /// println!("{} to {}", high, low);
     /// ````
     #[inline(always)]
-    pub fn range(&self) -> (i32, i32) {
-        let low = roll::process(self, RollType::Low);
-        let high = roll::process(self, RollType::High);
-        (low, high)
+    pub fn range(&self) -> Result<(i32, i32), errors::DivideByZeroError> {
+        let low = roll::process(self, RollType::Low)?;
+        let high = roll::process(self, RollType::High)?;
+        Ok((low, high))
     }
     /// calculates the lowest possable number given the die
     /// if no die notation is present in the equation this number will be the same as roll()
@@ -77,11 +77,11 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").unwrap().low());
+    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").unwrap().low().unwrap());
     /// ````
     #[inline(always)]
-    pub fn low(&self) -> i32 {
-        roll::process(self, RollType::Low)
+    pub fn low(&self) -> Result<i32, errors::DivideByZeroError> {
+        Ok(roll::process(self, RollType::Low)?)
     }
     /// calculates the highest possable number given the die
     /// if no die notation is present in the equation this number will be the same as roll()
@@ -90,11 +90,11 @@ impl Equation {
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").unwrap().high());
+    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").unwrap().high().unwrap());
     /// ````
     #[inline(always)]
-    pub fn high(&self) -> i32 {
-        roll::process(self, RollType::High)
+    pub fn high(&self) -> Result<i32, errors::DivideByZeroError> {
+        Ok(roll::process(self, RollType::High)?)
     }
 }
 pub(crate) enum RollType {

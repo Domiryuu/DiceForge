@@ -1,8 +1,12 @@
 use crate::equation;
 use crate::equation::{Die, Equation, Token};
+use crate::errors::DivideByZeroError;
 use rand::Rng;
 
-pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i32 {
+pub(super) fn process(
+    equation: &Equation,
+    ty: equation::RollType,
+) -> Result<i32, DivideByZeroError> {
     // todo!();
     let mut stack: Vec<i32> = Vec::with_capacity(equation.compiled_equation.len());
     for token in &equation.compiled_equation {
@@ -35,7 +39,7 @@ pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i32 {
                 let rhs = stack.pop().unwrap();
                 let lhs = stack.pop().unwrap();
                 if rhs == 0 {
-                    panic!("Divide by zero error");
+                    return Err(DivideByZeroError::DivideByZero);
                 }
                 stack.push(lhs / rhs);
             }
@@ -58,7 +62,7 @@ pub(super) fn process(equation: &Equation, ty: equation::RollType) -> i32 {
             _ => {}
         }
     }
-    stack.pop().unwrap()
+    Ok(stack.pop().unwrap())
 }
 fn roll(die: Die) -> i32 {
     // todo!();

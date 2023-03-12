@@ -8,7 +8,7 @@ fn main() {
             panic!()
         }
     };
-    let my_roll = my_equation.roll();
+    let my_roll = my_equation.roll().unwrap();
     println!("my_roll:{}", my_roll);
 
     let doc_equation = match Equation::new("3d5+10/2^2") {
@@ -18,10 +18,10 @@ fn main() {
             panic!()
         }
     };
-    println!("You rolled {}", doc_equation.roll());
-    println!("Average roll {}", doc_equation.average());
-    let (low, high) = doc_equation.range();
+    println!("You rolled {}", doc_equation.roll().unwrap());
+    println!("Average roll {}", doc_equation.average().unwrap());
+    let (low, high) = doc_equation.range().unwrap();
     println!("range {} to {}", low, high);
-    println!("lowest possable number {}", doc_equation.low());
-    println!("highest possable number {}", doc_equation.high());
+    println!("lowest possable number {}", doc_equation.low().unwrap());
+    println!("highest possable number {}", doc_equation.high().unwrap());
 }

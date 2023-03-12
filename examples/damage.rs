@@ -12,7 +12,7 @@ impl Person {
         Person { health, damage }
     }
     fn attack(&self) -> i32 {
-        self.damage.roll()
+        self.damage.roll().unwrap()
     }
     // fn damage(mut self, d: i64) {
     //     self.health -= d as i32;
