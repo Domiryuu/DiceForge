@@ -13,7 +13,7 @@ Add, subtract, or even multiply modifiers to rolls
 To use DiceForge in your Rust project, add the following to your Cargo.toml file:
 ```toml
 [dependencies]
-dice_forge = "0.1.0"
+dice_forge = "0.2.0"
 ```
 
 ## Usage
