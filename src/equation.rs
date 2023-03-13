@@ -1,4 +1,3 @@
-//mod roll;
 use crate::errors;
 use crate::roll;
 
