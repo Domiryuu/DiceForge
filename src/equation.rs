@@ -15,34 +15,79 @@ pub struct Equation {
     pub(crate) compiled_equation: Vec<Token>,
 }
 impl Equation {
-    /// compiles and returns a new Equation
-    /// can be used to rapidly roll the same dice equation or to preform basic math without dice rolls
+    /// Compiles and returns a new `Equation` object.
+    ///
+    /// The `input` parameter should be a string representing a valid mathematical equation. The equation can
+    /// include dice notation in the format "NdM" where N is the number of dice to roll, and M is the number
+    /// of sides on each die. For example, "2d6" would roll two six-sided dice. The equation can also include
+    /// standard mathematical operators such as addition (+), subtraction (-), multiplication (*), and division (/).
+    /// Parentheses can be used to group sub-expressions together.
+    ///
+    /// The function compiles the equation into a postfix format that is optimized for efficient evaluation.
+    /// The resulting `Equation` object can then be used to roll the dice and perform basic math operations
+    /// without the need for recompilation.
     ///
     /// # Example
     ///
+    /// Creating a new `Equation` object and rolling the dice:
+    ///
     /// ```
     /// use dice_forge::Equation;
-    /// Equation::new("3d5+10/2^2");
+    ///
+    /// let my_equation = Equation::new("3d5+10/2^2").unwrap();
+    /// let result = my_equation.roll().unwrap();
+    /// println!("Result: {}", result);
     /// ```
     pub fn new(input: &str) -> Result<Equation, errors::InvalidExpressionError> {
         let compiled_equation = infix_to_postfix(input)?;
         Ok(Equation { compiled_equation })
     }
-    /// rolls the Equation preforms basic math returning the product
+    /// Rolls the given `Equation` object.
     ///
-    /// # Example
+    /// The `input` parameter should be a string representing a valid mathematical equation that can include
+    /// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+    /// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+    /// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+    /// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+    /// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+    /// dice notation.
     ///
+    /// # Examples
+    ///
+    /// Rolling 1d4:
     /// ```
     /// use dice_forge::Equation;
-    /// println!("you rolled {}", Equation::new("3d5+10/2^2").unwrap().roll().unwrap());
-    /// ````
+    ///
+    /// let my_equation = Equation::new("1d4").unwrap();
+    /// let result = my_equation.roll().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling 2d6 a modifier:
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let my_equation = Equation::new("2d6+4").unwrap();
+    /// let result = my_equation.roll().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling a more complex equation:
+    /// ```
+    /// use dice_forge::Equation;
+    /// let my_equation = Equation::new("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+    /// let result = my_equation.roll().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
     #[inline(always)]
     pub fn roll(&self) -> Result<i32, errors::InvalidExpressionError> {
         //     todo!();
         Ok(roll::process(self, RollType::Default)?)
     }
     /// calculates the product of the equation assuming the average roll of all die in the equation
-    /// if no die are present in the equation result will be the same as roll()
     ///
     /// # Example
     ///
@@ -54,47 +99,165 @@ impl Equation {
     pub fn average(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Average)?)
     }
-    ///calculates the product resulting from both the highest and lowest possable rolls to give you the range
-    /// if no die notation is present in the equation both numbers will be the same as roll()
+    /// Calculates the range of possible values that can be produced by the equation.
+    ///
+    /// The range is calculated by finding the product of the highest and lowest possible rolls for
+    /// all dice in the equation. Note that this calculation will not take into account any additional
+    /// mathematical operations in the equation, and may not accurately represent the true range of
+    /// possible values.
     ///
     /// # Example
     ///
     /// ```
     /// use dice_forge::Equation;
+    ///
     /// let (low, high) = Equation::new("3d5+10/2^2").unwrap().range().unwrap();
-    /// println!("{} to {}", high, low);
-    /// ````
+    ///
+    /// println!("Range: {} - {}", low, high);
+    /// ```
     #[inline(always)]
     pub fn range(&self) -> Result<(i32, i32), errors::InvalidExpressionError> {
         let low = roll::process(self, RollType::Low)?;
         let high = roll::process(self, RollType::High)?;
         Ok((low, high))
     }
-    /// calculates the lowest possable number given the die
-    /// if no die notation is present in the equation this number will be the same as roll()
+    /// Calculates the lowest possible value that can be produced by the equation.
+    ///
+    /// The value is calculated by finding the product of the lowest possible rolls for
+    /// all dice in the equation. Note that this calculation will not take into account any additional
+    /// mathematical operations in the equation, and may not accurately represent the true lowest of
+    /// possible values.
     ///
     /// # Example
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("lowest number possable: {}", Equation::new("3d5+10/2^2").unwrap().low().unwrap());
-    /// ````
+    ///
+    /// let low = Equation::new("3d5+10/2^2").unwrap().low().unwrap();
+    ///
+    /// println!("Low: {}", low);
+    /// ```
     #[inline(always)]
     pub fn low(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Low)?)
     }
-    /// calculates the highest possable number given the die
-    /// if no die notation is present in the equation this number will be the same as roll()
+    /// Calculates the highest possible value that can be produced by the equation.
+    ///
+    /// The value is calculated by finding the product of the highest possible rolls for
+    /// all dice in the equation. Note that this calculation will not take into account any additional
+    /// mathematical operations in the equation, and may not accurately represent the true highest of
+    /// possible values.
     ///
     /// # Example
     ///
     /// ```
     /// use dice_forge::Equation;
-    /// println!("Highest number possable: {}", Equation::new("3d5+10/2^2").unwrap().high().unwrap());
-    /// ````
+    ///
+    /// let high = Equation::new("3d5+10/2^2").unwrap().high().unwrap();
+    ///
+    /// println!("High: {}", high);
+    /// ```
     #[inline(always)]
     pub fn high(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::High)?)
+    }
+    /// Rolls the given `Equation` object with advantage.
+    ///
+    /// The `input` parameter should be a string representing a valid mathematical equation that can include
+    /// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+    /// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+    /// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+    /// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+    /// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+    /// dice notation.
+    ///
+    /// The function rolls the given equation twice and returns the greater of the two results. This
+    /// emulates the "advantage" mechanic in some games, where a player can roll two dice and take the greater result.
+    ///
+    /// # Examples
+    ///
+    /// Rolling 1d4:
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let my_equation = Equation::new("1d4").unwrap();
+    /// let result = my_equation.advantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling 2d6 a modifier:
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let my_equation = Equation::new("2d6+4").unwrap();
+    /// let result = my_equation.advantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling a more complex equation:
+    /// ```
+    /// use dice_forge::Equation;
+    /// let my_equation = Equation::new("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+    /// let result = my_equation.advantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    #[inline(always)]
+    pub fn advantage(&self) -> Result<i32, errors::InvalidExpressionError> {
+        let r1 = self.roll()?;
+        let r2 = self.roll()?;
+        Ok(std::cmp::max(r1, r2))
+    }
+    /// Rolls the given `Equation` object with disadvantage.
+    ///
+    /// The `input` parameter should be a string representing a valid mathematical equation that can include
+    /// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+    /// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+    /// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+    /// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+    /// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+    /// dice notation.
+    ///
+    /// The function rolls the given equation twice and returns the lesser of the two results. This
+    /// emulates the "disadvantage" mechanic in some games, where a player can roll two dice and take the lesser result.
+    ///
+    /// # Examples
+    ///
+    /// Rolling 1d4:
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let my_equation = Equation::new("1d4").unwrap();
+    /// let result = my_equation.disadvantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling 2d6 a modifier:
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let my_equation = Equation::new("2d6+4").unwrap();
+    /// let result = my_equation.disadvantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    ///
+    /// Rolling a more complex equation:
+    /// ```
+    /// use dice_forge::Equation;
+    /// let my_equation = Equation::new("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+    /// let result = my_equation.disadvantage().unwrap();
+    ///
+    /// println!("Result: {}", result);
+    /// ```
+    #[inline(always)]
+    pub fn disadvantage(&self) -> Result<i32, errors::InvalidExpressionError> {
+        let r1 = self.roll()?;
+        let r2 = self.roll()?;
+        Ok(std::cmp::min(r1, r2))
     }
 }
 pub(crate) enum RollType {

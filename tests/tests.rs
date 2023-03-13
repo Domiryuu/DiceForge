@@ -118,4 +118,14 @@ mod tests {
             ),
         }
     }
+    #[test]
+    fn roll_with_advantage() {
+        let my_eq = Equation::new("d20").unwrap();
+        let _roll = my_eq.advantage().unwrap();
+    }
+    #[test]
+    fn roll_with_disadvantage() {
+        let my_eq = Equation::new("d20").unwrap();
+        let _roll = my_eq.disadvantage().unwrap();
+    }
 }

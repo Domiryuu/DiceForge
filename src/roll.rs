@@ -64,19 +64,136 @@ pub(super) fn process(
     Ok(stack.pop().unwrap())
 }
 fn roll_die(die: Die) -> i32 {
-    // todo!();
     let mut rng = rand::thread_rng();
     let mut current: i32 = 0;
-    //let die = dice.unwrap();
     for _n in 0..die.number {
         current += rng.gen_range(1..die.sides + 1) as i32;
     }
     current
 }
-
+/// Rolls the given dice equation.
+///
+/// The `input` parameter should be a string representing a valid mathematical equation that can include
+/// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+/// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+/// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+/// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+/// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+/// dice notation.
+///
+/// # Examples
+///
+/// Rolling 1d4:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::roll("1d4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling 2d6 a modifier:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::roll("2d6+4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling a more complex equation:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::roll("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+/// println!("Result: {}", result);
+/// ```
 pub fn roll(input: &str) -> Result<i32, InvalidExpressionError> {
     let compiled_equation = equation::infix_to_postfix(input)?;
-    println!("compiled");
     let a = Equation { compiled_equation };
-    process(&a, equation::RollType::Default)
+    a.roll()
+}
+/// Rolls the given dice equation with advantage.
+///
+/// The `input` parameter should be a string representing a valid mathematical equation that can include
+/// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+/// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+/// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+/// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+/// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+/// dice notation.
+///
+/// The function rolls the given equation twice and returns the higher of the two results. This
+/// emulates the "advantage" mechanic in some games, where a player can roll two dice and take the higher result.
+///
+/// # Examples
+///
+/// Rolling 1d4 with advantage:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::advantage("1d4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling 2d6 with advantage and a constant modifier:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::advantage("2d6+4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling a more complex equation with advantage:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::advantage("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+/// println!("Result: {}", result);
+/// ```
+pub fn advantage(input: &str) -> Result<i32, InvalidExpressionError> {
+    let compiled_equation = equation::infix_to_postfix(input)?;
+    let a = Equation { compiled_equation };
+    a.advantage()
+}
+/// Rolls the given dice equation with disadvantage.
+///
+/// The `input` parameter should be a string representing a valid mathematical equation that can include
+/// dice notation. Dice notation should be in the format "NdM" where N is the number of dice to roll,
+/// and M is the number of sides on each die. For example, "2d6" would roll two six-sided dice.
+/// Dice notation can also be combined with standard mathematical operators, such as addition (+),
+/// subtraction (-), multiplication (*), division (/), and exponent (^). Parentheses can also be used to group
+/// sub-expressions together. For example, "10+(3+2d6*2)+3(2d20)+d2" is a valid equation that includes
+/// dice notation.
+///
+/// The function rolls the given equation twice and returns the lesser of the two results. This
+/// emulates the "disadvantage" mechanic in some games, where a player can roll two dice and take the lesser result.
+///
+/// # Examples
+///
+/// Rolling 1d4 with disadvantage:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::disadvantage("1d4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling 2d6 with disadvantage and a constant modifier:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::disadvantage("2d6+4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling a more complex equation with disadvantage:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::disadvantage("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+/// println!("Result: {}", result);
+/// ```
+pub fn disadvantage(input: &str) -> Result<i32, InvalidExpressionError> {
+    let compiled_equation = equation::infix_to_postfix(input)?;
+    let a = Equation { compiled_equation };
+    a.disadvantage()
 }
