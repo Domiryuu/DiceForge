@@ -70,3 +70,8 @@ You can check out the rest of the documentation at [docs.rs](https://docs.rs/dic
 ## Contributing
 
 Contributions are welcome! If you find a bug or want to add a new feature, please submit a pull request on GitHub.
+
+or if you would like you can support me:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W0JGJTX)
+
