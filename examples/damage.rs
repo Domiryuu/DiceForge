@@ -7,11 +7,12 @@ struct Person {
 
 impl Person {
     fn new(health: i32, d: &str) -> Self {
-        let damage = dice_forge::Equation::new(d);
+        let damage =
+            dice_forge::Equation::new(d).expect("dont do this in your code handle the error");
         Person { health, damage }
     }
     fn attack(&self) -> i32 {
-        self.damage.roll()
+        self.damage.roll().unwrap()
     }
     // fn damage(mut self, d: i32) {
     //     self.health -= d as i32;

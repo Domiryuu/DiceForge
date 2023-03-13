@@ -83,7 +83,13 @@ impl Equation {
     /// println!("Result: {}", result);
     /// ```
     #[inline(always)]
+<<<<<<< HEAD
+    pub fn roll(&self) -> i32 {
+||||||| 5e7cebe
+    pub fn roll(&self) -> i64 {
+=======
     pub fn roll(&self) -> Result<i32, errors::InvalidExpressionError> {
+>>>>>>> organize
         //     todo!();
         Ok(roll::process(self, RollType::Default)?)
     }
@@ -96,8 +102,16 @@ impl Equation {
     /// println!("average roll {}", Equation::new("3d5+10/2^2").unwrap().average().unwrap());
     /// ````
     #[inline(always)]
+<<<<<<< HEAD
+    pub fn average(&self) -> i32 {
+        roll::process(self, RollType::Average)
+||||||| 5e7cebe
+    pub fn average(&self) -> i64 {
+        roll::process(self, RollType::Average)
+=======
     pub fn average(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Average)?)
+>>>>>>> organize
     }
     /// Calculates the range of possible values that can be produced by the equation.
     ///
@@ -116,10 +130,22 @@ impl Equation {
     /// println!("Range: {} - {}", low, high);
     /// ```
     #[inline(always)]
+<<<<<<< HEAD
+    pub fn range(&self) -> (i32, i32) {
+        let low = roll::process(self, RollType::Low);
+        let high = roll::process(self, RollType::High);
+        (low, high)
+||||||| 5e7cebe
+    pub fn range(&self) -> (i64, i64) {
+        let low = roll::process(self, RollType::Low);
+        let high = roll::process(self, RollType::High);
+        (low, high)
+=======
     pub fn range(&self) -> Result<(i32, i32), errors::InvalidExpressionError> {
         let low = roll::process(self, RollType::Low)?;
         let high = roll::process(self, RollType::High)?;
         Ok((low, high))
+>>>>>>> organize
     }
     /// Calculates the lowest possible value that can be produced by the equation.
     ///
@@ -138,8 +164,16 @@ impl Equation {
     /// println!("Low: {}", low);
     /// ```
     #[inline(always)]
+<<<<<<< HEAD
+    pub fn low(&self) -> i32 {
+        roll::process(self, RollType::Low)
+||||||| 5e7cebe
+    pub fn low(&self) -> i64 {
+        roll::process(self, RollType::Low)
+=======
     pub fn low(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::Low)?)
+>>>>>>> organize
     }
     /// Calculates the highest possible value that can be produced by the equation.
     ///
@@ -158,6 +192,13 @@ impl Equation {
     /// println!("High: {}", high);
     /// ```
     #[inline(always)]
+<<<<<<< HEAD
+    pub fn high(&self) -> i32 {
+        roll::process(self, RollType::High)
+||||||| 5e7cebe
+    pub fn high(&self) -> i64 {
+        roll::process(self, RollType::High)
+=======
     pub fn high(&self) -> Result<i32, errors::InvalidExpressionError> {
         Ok(roll::process(self, RollType::High)?)
     }
@@ -258,6 +299,7 @@ impl Equation {
         let r1 = self.roll()?;
         let r2 = self.roll()?;
         Ok(std::cmp::min(r1, r2))
+>>>>>>> organize
     }
 }
 pub(crate) enum RollType {
