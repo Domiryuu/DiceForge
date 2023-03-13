@@ -2,3 +2,4 @@
 /Cargo.lock
 /debug
 **/*.rs.bk
+/.cargo
