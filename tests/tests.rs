@@ -132,4 +132,9 @@ mod tests {
         let my_eq = Equation::new("d20").unwrap();
         let _roll = my_eq.disadvantage().unwrap();
     }
+    #[test]
+    fn emphasis_no_break() {
+        let my_eq = Equation::new("d20").unwrap();
+        let _roll = my_eq.emphasis().unwrap();
+    }
 }

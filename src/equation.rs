@@ -258,12 +258,34 @@ impl Equation {
         let r2 = self.roll()?;
         Ok(std::cmp::min(r1, r2))
     }
+
+    /// Calculates the highest possible value that can be produced by the equation.
+    ///
+    /// The value is calculated by finding the product of the highest possible rolls for
+    /// all dice in the equation. Note that this calculation will not take into account any additional
+    /// mathematical operations in the equation, and may not accurately represent the true highest of
+    /// possible values.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use dice_forge::Equation;
+    ///
+    /// let high = Equation::new("3d5+10/2^2").unwrap().high().unwrap();
+    ///
+    /// println!("High: {}", high);
+    /// ```
+    #[inline(always)]
+    pub fn emphasis(&self) -> Result<i32, errors::InvalidExpressionError> {
+        Ok(roll::process(self, RollType::Emphasis)?)
+    }
 }
 pub(crate) enum RollType {
     Default,
     Average,
     Low,
     High,
+    Emphasis,
 }
 
 #[derive(Clone, Copy)]

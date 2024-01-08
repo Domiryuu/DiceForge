@@ -18,6 +18,12 @@ pub(super) fn process(
                 equation::RollType::Average => {
                     stack.push((die.number as f32 * (die.sides as f32 / 2.0 + 0.5)) as i32)
                 }
+                equation::RollType::Emphasis => {
+                    let i = (die.number as f32 * (die.sides as f32 / 2.0 + 0.5)) as i32;
+                    let a = (roll_die(die)-i).abs();
+                    let b = (roll_die(die)-i).abs();
+                    stack.push(if a > b {a} else {b});
+                }
             },
             Token::Plus => {
                 let rhs = stack.pop().unwrap();
@@ -196,4 +202,39 @@ pub fn disadvantage(input: &str) -> Result<i32, InvalidExpressionError> {
     let compiled_equation = equation::infix_to_postfix(input)?;
     let a = Equation { compiled_equation };
     a.disadvantage()
+}
+/// Rolls the given dice equation with emphasis.
+///
+/// Emphasis is the idea of taking 2 rolls and using the one fartheset from the center. This can be used to create situations
+/// where things can go either very right or very wrong but unlikely neutral.
+///
+/// # Examples
+///
+/// Rolling 1d4 with emphasis:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::emphasis("1d4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling 2d6 with emphasis and a constant modifier:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::emphasis("2d6+4").unwrap();
+/// println!("Result: {}", result);
+/// ```
+///
+/// Rolling a more complex equation with disadvantage:
+/// ```
+/// use dice_forge::roll;
+///
+/// let result = roll::emphasis("10+(3+2d6*2)+3(2d20)+d2").unwrap();
+/// println!("Result: {}", result);
+/// ```
+pub fn emphasis(input: &str) -> Result<i32, InvalidExpressionError> {
+    let compiled_equation = equation::infix_to_postfix(input)?;
+    let a = Equation { compiled_equation };
+    a.emphasis()
 }
